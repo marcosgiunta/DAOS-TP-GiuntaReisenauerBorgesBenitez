@@ -1,19 +1,21 @@
 package tuti.daos.presentacion.receta;
 
-public class RecetaResDTO {
+import org.springframework.hateoas.RepresentationModel;
+
+public class RecetaResDTO extends RepresentationModel<RecetaResDTO> {
     private Integer id;
     private String nombre;
-    private String descripcion;
-    private boolean eliminada = false;
+    private Double pesoRacion;
+    private Integer caloriasRacion;
     
     public RecetaResDTO() {}
 
-	public RecetaResDTO(Integer id, String nombre, String descripcion, boolean eliminada) {
+	public RecetaResDTO(Integer id, String nombre, Double pesoRacion, Integer caloriasRacion) {
 		super();
 		this.id = id;
 		this.nombre = nombre;
-		this.descripcion = descripcion;
-		this.eliminada = eliminada;
+		this.pesoRacion = pesoRacion;
+		this.caloriasRacion = caloriasRacion;
 	}
 
 	public Integer getId() {
@@ -32,21 +34,19 @@ public class RecetaResDTO {
 		this.nombre = nombre;
 	}
 
-	public String getDescripcion() {
-		return descripcion;
+	public Double getPesoRacion() {
+		return pesoRacion;
 	}
 
-	public void setDescripcion(String descripcion) {
-		this.descripcion = descripcion;
+	public void setPesoRacion(Double pesoRacion) {
+		this.pesoRacion = pesoRacion;
 	}
 
-	public boolean isEliminada() {
-		return eliminada;
+	public Integer getCaloriasRacion() {
+		return caloriasRacion;
 	}
 
-	public void setEliminada(boolean eliminada) {
-		this.eliminada = eliminada;
+	public void setCaloriasRacion(Integer caloriasRacion) {
+		this.caloriasRacion = caloriasRacion;
 	}
-    
-    
 }

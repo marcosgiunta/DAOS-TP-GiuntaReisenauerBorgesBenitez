@@ -1,29 +1,30 @@
 package tuti.daos.presentacion.receta;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+
 public class RecetaReqDTO {
-    private Integer id;
+    @NotBlank(message = "El nombre de la receta es obligatorio")
     private String nombre;
-    private String descripcion;
-    private boolean eliminada = false; 
     
-    public RecetaReqDTO() {
-  
-    }
-
-	public RecetaReqDTO(Integer id, String nombre, String descripcion, boolean eliminada) {
+    @NotNull(message = "El peso es obligatorio")
+    @Positive(message = "El peso tiene que ser positivo")
+    private Double pesoRacion;
+    
+    @NotNull(message = "Las calorias son obligatorias")
+    @Positive(message = "Las calorías tienen que ser positivas")
+    private Integer caloriasRacion;
+    
+    public RecetaReqDTO() {}
+    
+	public RecetaReqDTO(@NotBlank(message = "El nombre de la receta es obligatorio") String nombre,
+			@NotNull(message = "El peso es obligatorio") @Positive(message = "El peso tiene que ser positivo") Double pesoRacion,
+			@NotNull(message = "Las calorias son obligatorias") @Positive(message = "Las calorías tienen que ser positivas") Integer caloriasRacion) {
 		super();
-		this.id = id;
 		this.nombre = nombre;
-		this.descripcion = descripcion;
-		this.eliminada = eliminada;
-	}
-
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
+		this.pesoRacion = pesoRacion;
+		this.caloriasRacion = caloriasRacion;
 	}
 
 	public String getNombre() {
@@ -34,19 +35,21 @@ public class RecetaReqDTO {
 		this.nombre = nombre;
 	}
 
-	public String getDescripcion() {
-		return descripcion;
+	public Double getPesoRacion() {
+		return pesoRacion;
 	}
 
-	public void setDescripcion(String descripcion) {
-		this.descripcion = descripcion;
+	public void setPesoRacion(Double pesoRacion) {
+		this.pesoRacion = pesoRacion;
 	}
 
-	public boolean isEliminada() {
-		return eliminada;
+	public Integer getCaloriasRacion() {
+		return caloriasRacion;
 	}
 
-	public void setEliminada(boolean eliminada) {
-		this.eliminada = eliminada;
+	public void setCaloriasRacion(Integer caloriasRacion) {
+		this.caloriasRacion = caloriasRacion;
 	}
+    
+    
 }
