@@ -6,7 +6,10 @@ import java.util.List;
 import jakarta.persistence.*;
 
 @Entity
+@Table(name="recetas")
 public class Receta {
+
+	public Receta() {};
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
