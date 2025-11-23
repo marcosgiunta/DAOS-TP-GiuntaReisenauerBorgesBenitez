@@ -29,7 +29,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(error);
     }
 
-    // Tu excepción personalizada
+    // Excepción personalizada
     @ExceptionHandler(Excepcion.class)
     public ResponseEntity<ErrorResponse> handleApi(Excepcion ex) {
 
