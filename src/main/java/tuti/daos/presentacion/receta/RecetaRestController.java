@@ -66,6 +66,7 @@ public class RecetaRestController {
 		return ResponseEntity.noContent().build();
 	}
 	
+	// LINKS PARA HATEOAS
 	private EntityModel<RecetaResDTO> addLinks(RecetaResDTO receta) {
 		EntityModel<RecetaResDTO> recurso =EntityModel.of(receta);
 		
@@ -76,14 +77,15 @@ public class RecetaRestController {
 		).withSelfRel());
 		
 		// LINK PARA CONSULTAR RACIONES DE LA RECETA (ESTO FALTA COMPLETAR CON LO DE RACIONES)
-		/*recurso.add(Link.of(
+		/*
+		 	recurso.add(Link.of(
 				WebMvcLinkBuilder.linkTo(
 						WebMvcLinkBuilder.methodOn(
 								//tuti.daos.presentacion.racion.RacionRestController.class
 						).findByRecetaId(receta.getId())
 				).toString(),
 				"preparaciones"
-		));
+			));
 		*/
 		
 		return recurso;

@@ -1,7 +1,7 @@
 package tuti.daos.entidades;
 
-import java.util.ArrayList;
-import java.util.List;
+// import java.util.ArrayList;
+// import java.util.List;
 
 import jakarta.persistence.*;
 
@@ -9,65 +9,64 @@ import jakarta.persistence.*;
 @Table(name="recetas")
 public class Receta {
 
-	public Receta() {};
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+    
+    @Column(name = "nombre", nullable = false, unique = true)
     private String nombre;
-    private String descripcion;
-    private boolean eliminada = false; 
+    
+    @Column(name = "peso_racion", nullable = false)
+    private Double pesoRacion;
+    
+    @Column(name = "calorias_racion", nullable = false)
+    private Integer caloriasRacion;
    
-    @OneToMany(mappedBy = "receta", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Preparacion> preparaciones;
+    /*
+     * PARA COMPLETAR CUANDO SE CREE LA ENTIDAD RACION
+    	@OneToMany(mappedBy = "receta", cascade = CascadeType.ALL)
+    	private List<Racion> raciones = new ArrayList<>();
+    */
 
-   
-    @OneToMany(mappedBy = "receta", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ItemReceta> ingredientes = new ArrayList<>();
-    
-    @Transient
-    public Integer getCaloriasTotales() {
-    	if (ingredientes == null) return 0;
-    	return ingredientes.stream().mapToInt(ItemReceta::getCalorias).sum();
-    }
+    public Receta() {}
 
-    public Integer getId() {
-        return id;
-    }   
-    
-    public void setId(Integer id) {
-        this.id = id;
-    }
-    
-    public String getNombre() {
-        return nombre;
-    }
-    
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-    
-    public String getDescripcion() {
-        return descripcion;
-    }
+	public Receta(Integer id, String nombre, Double pesoRacion, Integer caloriasRacion) {
+		super();
+		this.id = id;
+		this.nombre = nombre;
+		this.pesoRacion = pesoRacion;
+		this.caloriasRacion = caloriasRacion;
+	}
 
-    public void setDescripcion(String descripcion) {
-    this.descripcion = descripcion;
-    }
-    
-    public boolean getEliminada() {
-        return eliminada;
-    }
+	public Integer getId() {
+		return id;
+	}
 
-    public void setEliminada(boolean eliminada) {
-    	this.eliminada = eliminada;
-    }
-    
-    public List<ItemReceta> getIngredientes() {
-        return ingredientes;
-    }
+	public void setId(Integer id) {
+		this.id = id;
+	}
 
-    public void setIngredientes(List<ItemReceta> ingrediente) {
-    	this.ingredientes = ingrediente;
-    }
+	public String getNombre() {
+		return nombre;
+	}
+
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
+	}
+
+	public Double getPesoRacion() {
+		return pesoRacion;
+	}
+
+	public void setPesoRacion(Double pesoRacion) {
+		this.pesoRacion = pesoRacion;
+	}
+
+	public Integer getCaloriasRacion() {
+		return caloriasRacion;
+	}
+
+	public void setCaloriasRacion(Integer caloriasRacion) {
+		this.caloriasRacion = caloriasRacion;
+	}
 }
