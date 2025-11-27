@@ -10,13 +10,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 import jakarta.validation.Valid;
 import tuti.daos.servicios.RacionService;
 
 @RestController
 @RequestMapping("/raciones")
 @Validated
+@Tag(name = "Raciones", description = "Operaciones sobre el stock de raciones preparadas")
 public class RacionRestController {
+
 
     @Autowired
     private RacionService racionService;
