@@ -2,28 +2,19 @@ package tuti.daos.presentacion.racion;
 
 import java.util.Date;
 
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.hateoas.RepresentationModel;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 public class RacionResDTO extends RepresentationModel<RacionResDTO> {
 
     private Integer id;
-
-    // cantidad producida (stock preparado)
     private Integer stockPreparado;
-
-    // cantidad restante (solo lectura en la API)
     private Integer stockRestante;
-
     private Integer recetaId;
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date fechaPreparacion;
-
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date fechaVencimiento;
-
-    // GETTERS y SETTERS
 
     public Integer getId() {
         return id;
@@ -57,6 +48,7 @@ public class RacionResDTO extends RepresentationModel<RacionResDTO> {
         this.recetaId = recetaId;
     }
 
+    @JsonFormat(pattern = "yyyy-MM-dd")
     public Date getFechaPreparacion() {
         return fechaPreparacion;
     }
@@ -65,6 +57,7 @@ public class RacionResDTO extends RepresentationModel<RacionResDTO> {
         this.fechaPreparacion = fechaPreparacion;
     }
 
+    @JsonFormat(pattern = "yyyy-MM-dd")
     public Date getFechaVencimiento() {
         return fechaVencimiento;
     }

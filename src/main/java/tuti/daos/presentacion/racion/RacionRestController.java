@@ -1,5 +1,6 @@
 package tuti.daos.presentacion.racion;
 
+import tuti.daos.presentacion.receta.RecetaRestController;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +19,7 @@ import tuti.daos.servicios.RacionService;
 @RestController
 @RequestMapping("/raciones")
 @Validated
-@Tag(name = "Raciones", description = "Operaciones sobre el stock de raciones preparadas")
+@Tag(name = "Raciones", description = "Raciones preparadas")
 public class RacionRestController {
 
 
@@ -61,6 +62,14 @@ public class RacionRestController {
                         .methodOn(RacionRestController.class)
                         .findAll())
                 .withRel("lista_raciones");
+     
+        
+        Link recetaLink = WebMvcLinkBuilder
+                .linkTo(WebMvcLinkBuilder
+                        .methodOn(RecetaRestController.class)
+                        .findById(dto.getRecetaId()))
+                .withRel("receta");
+        
 
         dto.add(allLink);
 

@@ -2,7 +2,6 @@ package tuti.daos.servicios;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,13 +23,12 @@ public class RacionServiceImpl implements RacionService {
     @Autowired
     private RecetaRepository recetaRepository;
 
-
     // ======================================================
-    // LISTAR TODO
+    // LISTAR TODO (solo no eliminadas)
     // ======================================================
     @Override
     public List<RacionResDTO> findAll() {
-        List<Preparacion> lista = racionRepositorio.findAll();
+        List<Preparacion> lista = racionRepositorio.findByEliminadoFalse();
         List<RacionResDTO> respuesta = new ArrayList<>();
 
         for (Preparacion p : lista) {
@@ -40,18 +38,22 @@ public class RacionServiceImpl implements RacionService {
         return respuesta;
     }
 
-
     // ======================================================
-    // BUSCAR POR ID
+    // BUSCAR POR ID (no devuelve eliminadas)
     // ======================================================
     @Override
     public RacionResDTO findById(Integer id) {
+
         Preparacion p = racionRepositorio.findById(id)
-                .orElseThrow(() -> new Excepcion("404", "Ración no encontrada", 400));
+                .filter(prep -> !prep.isEliminado())
+                .orElseThrow(() -> new Excepcion(
+                        "404",
+                        "Ración no encontrada",
+                        400   
+                ));
 
         return mapToDTO(p);
     }
-
 
     // ======================================================
     // CREAR RACION
@@ -61,11 +63,19 @@ public class RacionServiceImpl implements RacionService {
 
         // Validar receta
         Receta receta = recetaRepository.findById(dto.getRecetaId())
-                .orElseThrow(() -> new Excepcion("404", "La receta indicada no existe", 404));
+                .orElseThrow(() -> new Excepcion(
+                        "404",
+                        "La receta indicada no existe",
+                        400
+                ));
 
         // Validar fechas
         if (dto.getFechaVencimiento().before(dto.getFechaPreparacion())) {
-            throw new Excepcion("400", "La fecha de vencimiento no puede ser anterior a la fecha de preparación", 400);
+            throw new Excepcion(
+                    "400",
+                    "La fecha de vencimiento no puede ser anterior a la fecha de preparación",
+                    400
+            );
         }
 
         Preparacion p = new Preparacion();
@@ -81,55 +91,71 @@ public class RacionServiceImpl implements RacionService {
         return mapToDTO(guardada);
     }
 
-
     // ======================================================
-    // ACTUALIZAR
+    // ACTUALIZAR RACION (no permite actualizar eliminadas)
     // ======================================================
     @Override
     public RacionResDTO update(Integer id, RacionReqDTO dto) {
 
         Preparacion p = racionRepositorio.findById(id)
-                .orElseThrow(() -> new Excepcion("404", "Ración no encontrada", 404));
+                .filter(prep -> !prep.isEliminado())
+                .orElseThrow(() -> new Excepcion(
+                        "404",
+                        "Ración no encontrada",
+                        400
+                ));
 
         Receta receta = recetaRepository.findById(dto.getRecetaId())
-                .orElseThrow(() -> new Excepcion("404", "La receta indicada no existe", 404));
+                .orElseThrow(() -> new Excepcion(
+                        "404",
+                        "La receta indicada no existe",
+                        400
+                ));
 
         if (dto.getFechaVencimiento().before(dto.getFechaPreparacion())) {
-            throw new Excepcion("400", "La fecha de vencimiento no puede ser anterior a la fecha de preparación", 400);
+            throw new Excepcion(
+                    "400",
+                    "La fecha de vencimiento no puede ser anterior a la fecha de preparación",
+                    400
+            );
         }
 
         p.setReceta(receta);
         p.setFechaPreparacion(dto.getFechaPreparacion());
         p.setFechaVencimiento(dto.getFechaVencimiento());
         p.setTotalRacionesPreparadas(dto.getStockPreparado());
-
+        p.setStockRacionesRestantes(dto.getStockPreparado());
 
         Preparacion guardada = racionRepositorio.save(p);
 
         return mapToDTO(guardada);
     }
 
-
     // ======================================================
-    // BORRAR
+    // BORRAR 
     // ======================================================
     @Override
     public void delete(Integer id) {
+
         Preparacion p = racionRepositorio.findById(id)
-                .orElseThrow(() -> new Excepcion("404", "Ración no encontrada", 404));
+                .filter(prep -> !prep.isEliminado())
+                .orElseThrow(() -> new Excepcion(
+                        "404",
+                        "Ración no encontrada",
+                        400
+                ));
 
         p.setEliminado(true);
         racionRepositorio.save(p);
     }
 
-
     // ======================================================
-    // BUSCAR POR RECETA
+    // BUSCAR POR RECETA (no devuelve eliminadas)
     // ======================================================
     @Override
     public List<RacionResDTO> findByRecetaId(Integer recetaId) {
 
-        List<Preparacion> lista = racionRepositorio.findByRecetaId(recetaId);
+        List<Preparacion> lista = racionRepositorio.findByRecetaIdAndEliminadoFalse(recetaId);
         List<RacionResDTO> respuesta = new ArrayList<>();
 
         for (Preparacion p : lista) {
@@ -138,7 +164,6 @@ public class RacionServiceImpl implements RacionService {
 
         return respuesta;
     }
-
 
     // ======================================================
     // MAPEO ENTIDAD → DTO

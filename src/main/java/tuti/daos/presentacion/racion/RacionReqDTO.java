@@ -1,10 +1,8 @@
 package tuti.daos.presentacion.racion;
 
 import java.util.Date;
-
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
-
 import org.springframework.format.annotation.DateTimeFormat;
 
 public class RacionReqDTO {
@@ -23,8 +21,6 @@ public class RacionReqDTO {
     @NotNull
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date fechaVencimiento;
-
-    // GETTERS y SETTERS
 
     public Integer getStockPreparado() {
         return stockPreparado;
