@@ -1,4 +1,6 @@
 package tuti.daos.presentacion.receta;
+import tuti.daos.presentacion.racion.RacionRestController;  
+
 
 import java.net.URI;
 import java.util.List;
@@ -77,16 +79,13 @@ public class RecetaRestController {
 		).withSelfRel());
 		
 		// LINK PARA CONSULTAR RACIONES DE LA RECETA (ESTO FALTA COMPLETAR CON LO DE RACIONES)
-		/*
-		 	recurso.add(Link.of(
-				WebMvcLinkBuilder.linkTo(
-						WebMvcLinkBuilder.methodOn(
-								//tuti.daos.presentacion.racion.RacionRestController.class
-						).findByRecetaId(receta.getId())
-				).toString(),
-				"preparaciones"
-			));
-		*/
+
+		recurso.add(
+		        WebMvcLinkBuilder.linkTo(
+		            WebMvcLinkBuilder.methodOn(RacionRestController.class)
+		                    .findByReceta(receta.getId())  
+		        ).withRel("raciones")
+		    );
 		
 		return recurso;
 		
