@@ -15,6 +15,11 @@ public class Preparacion {
     @Temporal(TemporalType.DATE)
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date fechaPreparacion;
+    
+    @Temporal(TemporalType.DATE)
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date fechaVencimiento;
+
 
     private Integer stockRacionesRestantes;
     private Integer TotalRacionesPreparadas;
@@ -44,6 +49,15 @@ public class Preparacion {
     public void setFechaPreparacion(Date fechaPreparacion) {
         this.fechaPreparacion = fechaPreparacion;
     }
+    
+    public Date getFechaVencimiento() {
+        return fechaVencimiento;
+    }
+
+    public void setFechaVencimiento(Date fechaVencimiento) {
+        this.fechaVencimiento = fechaVencimiento;
+    }
+
 
     public Integer getStockRacionesRestantes() {
         return stockRacionesRestantes;
