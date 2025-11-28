@@ -1,10 +1,12 @@
 package tuti.daos.entidades;
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
 import jakarta.validation.constraints.PastOrPresent;
-import jakarta.persistence.*;  
+import jakarta.persistence.*;
+import java.util.List;
 
 /*
  * Esta clase representa a un Asistido - hereda de Persona)
@@ -30,6 +32,11 @@ public class Asistido  extends Persona {
     //Este campo se utiliza para el borrado lógico
 	//private Boolean deshabilitado = false;
     
+	@OneToMany(
+    mappedBy = "asistido",
+    cascade = CascadeType.ALL,
+    orphanRemoval = true)
+    private List<EntregaAsistencia> asistencias = new ArrayList<>();
 	
 	public LocalDate getFechaRegistro() {
         return fechaRegistro;
@@ -61,6 +68,13 @@ public class Asistido  extends Persona {
 
 	public void setCiudad(Ciudad ciudad) {
 		this.ciudad = ciudad;
+	}
+
+	public List<EntregaAsistencia> getAsistencias() {
+		return asistencias;
+	}
+	public void setAsistencias(List<EntregaAsistencia> asistencias) {
+		this.asistencias = asistencias;
 	}
 
 }

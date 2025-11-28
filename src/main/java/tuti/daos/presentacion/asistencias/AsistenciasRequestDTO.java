@@ -8,7 +8,8 @@ import jakarta.validation.constraints.Positive;
 public class AsistenciasRequestDTO {
 
     @NotNull(message = "El ID de la persona asistida es obligatorio")
-    private Integer idAsistido;
+    @Positive(message = "El ID del asistido debe ser un número positivo")
+    private Integer asistido;
 
     @Positive(message = "El ID de la ración debe ser un número positivo")
     @NotNull(message = "El ID de la ración entregada es obligatorio")
@@ -17,12 +18,12 @@ public class AsistenciasRequestDTO {
     @NotNull(message = "La fecha de entrega es obligatoria")
     private Date fechaEntrega;
 
-    public Integer getIdAsistido() {
-        return idAsistido;
+    public Integer getAsistido() {
+        return asistido;
     }
 
-    public void setIdAsistido(Integer idAsistido) {
-        this.idAsistido = idAsistido;
+    public void setAsistido(Integer asistido) {
+        this.asistido = asistido;
     }
 
     public Integer getIdRacionEntregada() {

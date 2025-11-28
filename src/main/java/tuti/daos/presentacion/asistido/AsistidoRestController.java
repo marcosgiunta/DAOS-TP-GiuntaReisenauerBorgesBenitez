@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import tuti.daos.Excepciones.Excepcion;
 import tuti.daos.entidades.Asistido;
 import tuti.daos.presentacion.Ciudad.CiudadRestController;
+import tuti.daos.presentacion.asistencias.AsistenciaRestController;
 import tuti.daos.servicios.AsistidoService;
 
 @RestController
@@ -147,8 +148,16 @@ public class AsistidoRestController {
 			Link ciudadLink = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(CiudadRestController.class)
 					.getCiudad(pojo.getCiudad().getId()))
 					.withRel("ciudad");
+            
+			Link asistenciaLink = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(AsistenciaRestController.class)
+                    .mostrarAsistenciasPorAsistido(pojo.getId())) // ID del asistido
+                    .withRel("asistencias");
+
 			dto.add(selfLink);
 			dto.add(ciudadLink);
+			dto.add(asistenciaLink);
+			
+			
 			return dto;
 		} catch (Exception e) {
 			throw new Excepcion("Ciudad", "Error al construir los enlaces HATEOAS: " + e.getMessage(), 500);
