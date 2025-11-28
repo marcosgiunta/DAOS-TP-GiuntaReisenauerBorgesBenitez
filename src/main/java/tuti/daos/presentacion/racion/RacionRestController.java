@@ -22,130 +22,121 @@ import tuti.daos.servicios.RacionService;
 @Tag(name = "Raciones", description = "Raciones preparadas")
 public class RacionRestController {
 
+        @Autowired
+        private RacionService racionService;
 
-    @Autowired
-    private RacionService racionService;
+        // ======================================================
+        // LISTAR TODAS
+        // ======================================================
+        @GetMapping
+        public ResponseEntity<List<RacionResDTO>> findAll() {
+                List<RacionResDTO> lista = racionService.findAll();
 
+                // agregar links HATEOAS
+                lista.forEach(r -> {
+                        Link selfLink = WebMvcLinkBuilder
+                                        .linkTo(WebMvcLinkBuilder
+                                                        .methodOn(RacionRestController.class)
+                                                        .findById(r.getId()))
+                                        .withSelfRel();
 
-    // ======================================================
-    // LISTAR TODAS
-    // ======================================================
-    @GetMapping
-    public ResponseEntity<List<RacionResDTO>> findAll() {
-        List<RacionResDTO> lista = racionService.findAll();
+                        r.add(selfLink);
+                });
 
-        // agregar links HATEOAS
-        lista.forEach(r -> {
-            Link selfLink = WebMvcLinkBuilder
-                    .linkTo(WebMvcLinkBuilder
-                            .methodOn(RacionRestController.class)
-                            .findById(r.getId()))
-                    .withSelfRel();
+                return ResponseEntity.ok(lista);
+        }
 
-            r.add(selfLink);
-        });
+        // ======================================================
+        // BUSCAR POR ID
+        // ======================================================
+        @GetMapping("/{id}")
+        public ResponseEntity<RacionResDTO> findById(@PathVariable Integer id) {
+                RacionResDTO dto = racionService.findById(id);
 
-        return ResponseEntity.ok(lista);
-    }
+                // links
+                Link allLink = WebMvcLinkBuilder
+                                .linkTo(WebMvcLinkBuilder
+                                                .methodOn(RacionRestController.class)
+                                                .findAll())
+                                .withRel("lista_raciones");
 
+                Link recetaLink = WebMvcLinkBuilder
+                                .linkTo(WebMvcLinkBuilder
+                                                .methodOn(RecetaRestController.class)
+                                                .findById(dto.getRecetaId()))
+                                .withRel("receta");
 
-    // ======================================================
-    // BUSCAR POR ID
-    // ======================================================
-    @GetMapping("/{id}")
-    public ResponseEntity<RacionResDTO> findById(@PathVariable Integer id) {
-        RacionResDTO dto = racionService.findById(id);
+                dto.add(allLink);
 
-        // links
-        Link allLink = WebMvcLinkBuilder
-                .linkTo(WebMvcLinkBuilder
-                        .methodOn(RacionRestController.class)
-                        .findAll())
-                .withRel("lista_raciones");
-     
-        
-        Link recetaLink = WebMvcLinkBuilder
-                .linkTo(WebMvcLinkBuilder
-                        .methodOn(RecetaRestController.class)
-                        .findById(dto.getRecetaId()))
-                .withRel("receta");
-        
+                return ResponseEntity.ok(dto);
+        }
 
-        dto.add(allLink);
+        // ======================================================
+        // BUSCAR RACIONES POR RECETA
+        // ======================================================
+        @GetMapping("/receta/{recetaId}")
+        public ResponseEntity<List<RacionResDTO>> findByReceta(@PathVariable Integer recetaId) {
+                List<RacionResDTO> lista = racionService.findByRecetaId(recetaId);
 
-        return ResponseEntity.ok(dto);
-    }
+                lista.forEach(r -> {
+                        Link selfLink = WebMvcLinkBuilder
+                                        .linkTo(WebMvcLinkBuilder
+                                                        .methodOn(RacionRestController.class)
+                                                        .findById(r.getId()))
+                                        .withSelfRel();
+                        r.add(selfLink);
+                });
 
+                return ResponseEntity.ok(lista);
+        }
 
-    // ======================================================
-    // BUSCAR RACIONES POR RECETA
-    // ======================================================
-    @GetMapping("/receta/{recetaId}")
-    public ResponseEntity<List<RacionResDTO>> findByReceta(@PathVariable Integer recetaId) {
-        List<RacionResDTO> lista = racionService.findByRecetaId(recetaId);
+        // ======================================================
+        // CREAR RACION
+        // ======================================================
+        @PostMapping
+        public ResponseEntity<RacionResDTO> create(@Valid @RequestBody RacionReqDTO dto) {
 
-        lista.forEach(r -> {
-            Link selfLink = WebMvcLinkBuilder
-                    .linkTo(WebMvcLinkBuilder
-                            .methodOn(RacionRestController.class)
-                            .findById(r.getId()))
-                    .withSelfRel();
-            r.add(selfLink);
-        });
+                RacionResDTO creada = racionService.create(dto);
 
-        return ResponseEntity.ok(lista);
-    }
+                Link selfLink = WebMvcLinkBuilder
+                                .linkTo(WebMvcLinkBuilder
+                                                .methodOn(RacionRestController.class)
+                                                .findById(creada.getId()))
+                                .withSelfRel();
 
+                creada.add(selfLink);
 
-    // ======================================================
-    // CREAR RACION
-    // ======================================================
-    @PostMapping
-    public ResponseEntity<RacionResDTO> create(@Valid @RequestBody RacionReqDTO dto) {
+                return ResponseEntity.status(HttpStatus.CREATED).body(creada);
+        }
 
-        RacionResDTO creada = racionService.create(dto);
+        // ======================================================
+        // ACTUALIZAR RACION
+        // ======================================================
+        @PutMapping("/{id}")
+        public ResponseEntity<RacionResDTO> update(
+                        @PathVariable Integer id,
+                        @Valid @RequestBody RacionReqDTO dto) {
 
-        Link selfLink = WebMvcLinkBuilder
-                .linkTo(WebMvcLinkBuilder
-                        .methodOn(RacionRestController.class)
-                        .findById(creada.getId()))
-                .withSelfRel();
+                RacionResDTO actualizada = racionService.update(id, dto);
 
-        creada.add(selfLink);
+                Link selfLink = WebMvcLinkBuilder
+                                .linkTo(WebMvcLinkBuilder
+                                                .methodOn(RacionRestController.class)
+                                                .findById(actualizada.getId()))
+                                .withSelfRel();
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(creada);
-    }
+                actualizada.add(selfLink);
 
+                return ResponseEntity.ok(actualizada);
+        }
 
-    // ======================================================
-    // ACTUALIZAR RACION
-    // ======================================================
-    @PutMapping("/{id}")
-    public ResponseEntity<RacionResDTO> update(
-            @PathVariable Integer id,
-            @Valid @RequestBody RacionReqDTO dto) {
-
-        RacionResDTO actualizada = racionService.update(id, dto);
-
-        Link selfLink = WebMvcLinkBuilder
-                .linkTo(WebMvcLinkBuilder
-                        .methodOn(RacionRestController.class)
-                        .findById(actualizada.getId()))
-                .withSelfRel();
-
-        actualizada.add(selfLink);
-
-        return ResponseEntity.ok(actualizada);
-    }
-
-
-    // ======================================================
-    // ELIMINAR (DELETE)
-    // ======================================================
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Integer id) {
-        racionService.delete(id);
-        return ResponseEntity.noContent().build();
-    }
+        // ======================================================
+        // ELIMINAR (DELETE)
+        // ======================================================
+        @DeleteMapping("/{id}")
+        public ResponseEntity<Void> delete(@PathVariable Integer id) {
+                racionService.delete(id);
+                return ResponseEntity.noContent().build();
+        }
 
 }

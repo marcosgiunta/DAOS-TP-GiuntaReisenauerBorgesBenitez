@@ -9,7 +9,7 @@ import tuti.daos.entidades.EntregaAsistencia;
 public class AsistenciasResponseDTO extends RepresentationModel<AsistenciasResponseDTO> {
 
     private Integer id;
-    private Integer idAsistido;
+    private Integer asistido;
     private Integer idRacionEntregada;
     private Date fechaEntrega;
 
@@ -17,7 +17,7 @@ public class AsistenciasResponseDTO extends RepresentationModel<AsistenciasRespo
 
     public AsistenciasResponseDTO(EntregaAsistencia asistencia)  {
         this.id = asistencia.getId();
-        this.idAsistido = asistencia.getIdAsistido();
+        this.asistido = asistencia.getAsistido() != null ? asistencia.getAsistido().getId() : null;
         this.idRacionEntregada = asistencia.getIdRacionEntregada();
         this.fechaEntrega = asistencia.getFechaEntrega();
     }
@@ -26,8 +26,8 @@ public class AsistenciasResponseDTO extends RepresentationModel<AsistenciasRespo
         return id;
     }
 
-    public Integer getIdAsistido() {
-        return idAsistido;
+    public Integer getAsistido() {
+        return asistido;
     }
 
     public Integer getIdRacionEntregada() {

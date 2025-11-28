@@ -8,6 +8,7 @@ import tuti.daos.Excepciones.Excepcion;
 import tuti.daos.accesoDatos.AsistenciasRepositorio;
 import java.util.Optional;
 import tuti.daos.entidades.EntregaAsistencia;
+import tuti.daos.entidades.Asistido;
 import tuti.daos.presentacion.asistencias.AsistenciasRequestDTO;
 
 @Service
@@ -15,6 +16,9 @@ public class AsistenciaServiceImpl implements AsistenciaService {
 
     @Autowired
     private AsistenciasRepositorio repo;
+
+    @Autowired
+    private AsistidoService asistidoService;
 
     @Override
     public List<EntregaAsistencia> getAll() {
@@ -33,9 +37,12 @@ public class AsistenciaServiceImpl implements AsistenciaService {
 
     @Override
     public EntregaAsistencia add(AsistenciasRequestDTO request) {
+        // Buscar el asistido por ID
+        Asistido asistido = asistidoService.getById(request.getAsistido())
+                .orElseThrow(() -> new Excepcion("Asistencias", "No existe un asistido con el ID proporcionado", 404));
 
         EntregaAsistencia nuevo = new EntregaAsistencia();
-        nuevo.setIdAsistido(request.getIdAsistido());
+        nuevo.setAsistido(asistido);
         nuevo.setIdRacionEntregada(request.getIdRacionEntregada());
         nuevo.setFechaEntrega(request.getFechaEntrega());
 
@@ -60,7 +67,11 @@ public class AsistenciaServiceImpl implements AsistenciaService {
         EntregaAsistencia existente = repo.findById(id)
                 .orElseThrow(() -> new Excepcion("Asistencias", "No existe una asistencia con ese id", 404));
 
-        existente.setIdAsistido(request.getIdAsistido());
+        // Buscar el asistido por ID
+        Asistido asistido = asistidoService.getById(request.getAsistido())
+                .orElseThrow(() -> new Excepcion("Asistencias", "No existe un asistido con el ID proporcionado", 404));
+
+        existente.setAsistido(asistido);
         existente.setIdRacionEntregada(request.getIdRacionEntregada());
         existente.setFechaEntrega(request.getFechaEntrega());
 
@@ -78,4 +89,8 @@ public class AsistenciaServiceImpl implements AsistenciaService {
 
         return repo.save(existente);
     }
+
+    public List<EntregaAsistencia> findByAsistidoId(Integer id) {
+    return repo.findByAsistidoId(id);
+}
 }

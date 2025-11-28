@@ -19,5 +19,7 @@ public interface AsistenciaService {
 	public EntregaAsistencia add(AsistenciasRequestDTO request);
     
 	public EntregaAsistencia update(Integer id, AsistenciasRequestDTO request);
+	
+	public List<EntregaAsistencia> findByAsistidoId(Integer id);
 
 }

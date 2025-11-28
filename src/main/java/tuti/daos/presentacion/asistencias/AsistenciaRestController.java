@@ -21,6 +21,8 @@ import org.springframework.hateoas.Link;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.web.bind.annotation.RequestBody;
 import tuti.daos.Excepciones.Excepcion;
 import tuti.daos.entidades.EntregaAsistencia;
@@ -74,6 +76,13 @@ public class AsistenciaRestController {
 		AsistenciasResponseDTO asistenciasDto = buildResponse(asistenciaOpt.get());
 		return ResponseEntity.ok(asistenciasDto);
 	}
+
+	@GetMapping("/asistidos/{id}/asistencias")
+    public ResponseEntity<List<AsistenciasResponseDTO>> mostrarAsistenciasPorAsistido(@PathVariable Integer id) {
+    var lista = asistenciaServicio.findByAsistidoId(id); // implementá este repo/servicio
+    var dtoList = lista.stream().map(this::buildResponse).collect(Collectors.toList());
+    return ResponseEntity.ok(dtoList);
+   }  
 
 	// POST CREAR
 	@Operation(summary = "Agrega una nueva asistencia",
