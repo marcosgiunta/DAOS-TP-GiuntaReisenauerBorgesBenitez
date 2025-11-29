@@ -1,32 +1,39 @@
 package tuti.daos.presentacion.asistencias;
 
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.Link;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import static org.springframework.http.ResponseEntity.created;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.hateoas.Link;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.springframework.web.bind.annotation.RequestBody;
 import tuti.daos.Excepciones.Excepcion;
 import tuti.daos.entidades.EntregaAsistencia;
+import tuti.daos.presentacion.asistido.AsistidoRestController;
+import tuti.daos.presentacion.racion.RacionResDTO;
+import tuti.daos.presentacion.racion.RacionRestController;
+import tuti.daos.presentacion.receta.RecetaRestController;
 import tuti.daos.servicios.AsistenciaService;
+import tuti.daos.servicios.RacionService;
 
 @RestController
 @RequestMapping("/asistencia")
@@ -35,6 +42,8 @@ public class AsistenciaRestController {
 
 	@Autowired
 	private AsistenciaService asistenciaServicio;
+
+	@Autowired private RacionService racionServicio;
 
 	// GET TODAS
 	@Operation(summary = "Obtiener los datos de todas las asistencias prestadas",
@@ -98,8 +107,7 @@ public class AsistenciaRestController {
 
 		AsistenciasResponseDTO respuesta = buildResponse(asistenciaServicio.add(request));
 
-		return ResponseEntity
-				.created(URI.create(respuesta.getRequiredLink("self").getHref()))
+		return created(URI.create(respuesta.getRequiredLink("self").getHref()))
 				.body(respuesta);
 	}
 
@@ -139,30 +147,46 @@ public class AsistenciaRestController {
 	}
 
 	private AsistenciasResponseDTO buildResponse(EntregaAsistencia pojo) {
-		try {
-			AsistenciasResponseDTO dto = new AsistenciasResponseDTO(pojo);
+    try {
+        AsistenciasResponseDTO dto = new AsistenciasResponseDTO(pojo);
 
-			// self
-			Link selfLink = WebMvcLinkBuilder
-					.linkTo(WebMvcLinkBuilder.methodOn(AsistenciaRestController.class)
-							.mostrarAsistencias(pojo.getId()))
-					.withSelfRel();
-			dto.add(selfLink);
+        // SELF link de la asistencia
+        Link selfLink = WebMvcLinkBuilder
+                .linkTo(WebMvcLinkBuilder.methodOn(AsistenciaRestController.class)
+                        .mostrarAsistencias(pojo.getId()))
+                .withSelfRel();
 
-			// S04 – aún no disponible 
-			/*
-			Link s04Link = WebMvcLinkBuilder
-					.linkTo(WebMvcLinkBuilder.methodOn(S04RestController.class)
-							.getS04PorAsistencia(pojo.getId()))
-					.withRel("s04");
-			dto.add(s04Link);
-			*/
+        // Link al asistido
+        Link asistidoLink = WebMvcLinkBuilder
+                .linkTo(WebMvcLinkBuilder.methodOn(AsistidoRestController.class)
+                        .mostrarAsistido(pojo.getAsistido().getId()))
+                .withRel("asistido");
 
-			return dto;
+        // Link a la ración entregada
+		Link racionLink = WebMvcLinkBuilder
+    			.linkTo(WebMvcLinkBuilder.methodOn(RacionRestController.class)
+        				.findById(pojo.getIdRacionEntregada()))
+    			.withRel("racion");
 
-		} catch (Exception e) {
-			throw new Excepcion("Asistencia",
-					"Error al construir los enlaces HATEOAS: " + e.getMessage(), 500);
-		}
+        // Link a la receta DE ESA ración → requiere pedir la ración al servicio
+		RacionResDTO racion = racionServicio.findById(pojo.getIdRacionEntregada());
+
+		Link recetaLink = WebMvcLinkBuilder
+        .linkTo(WebMvcLinkBuilder.methodOn(RecetaRestController.class)
+                .findById(racion.getRecetaId()))
+        .withRel("receta");
+
+        dto.add(selfLink);
+        dto.add(asistidoLink);
+        dto.add(racionLink);
+        dto.add(recetaLink);
+
+        return dto;
+
+    } catch (Exception e) {
+        throw new Excepcion("Asistencia",
+                "Error al construir enlaces HATEOAS: " + e.getMessage(), 500);
+    }
 	}
+
 }
