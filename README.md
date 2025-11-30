@@ -1,8 +1,11 @@
 Integrantes:
 
 ASISTIDO (Marcos Giunta)
+
 RACION (Flavia Reisenauer)
+
 ASISTENCIA (Dayse Borges)
+
 RECETA (Ivan Benitez)
 
 
