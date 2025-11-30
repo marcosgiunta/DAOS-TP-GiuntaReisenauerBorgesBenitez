@@ -39,8 +39,16 @@ public class RacionRestController {
                                                         .methodOn(RacionRestController.class)
                                                         .findById(r.getId()))
                                         .withSelfRel();
+                        
+
+                        Link recetaLink = WebMvcLinkBuilder
+                                .linkTo(WebMvcLinkBuilder
+                                                .methodOn(RecetaRestController.class)
+                                                .findById(r.getRecetaId()))
+                                .withRel("receta");                
 
                         r.add(selfLink);
+                        r.add(recetaLink);
                 });
 
                 return ResponseEntity.ok(lista);
@@ -67,6 +75,7 @@ public class RacionRestController {
                                 .withRel("receta");
 
                 dto.add(allLink);
+                dto.add(recetaLink);
 
                 return ResponseEntity.ok(dto);
         }
@@ -84,7 +93,16 @@ public class RacionRestController {
                                                         .methodOn(RacionRestController.class)
                                                         .findById(r.getId()))
                                         .withSelfRel();
+                                        
+                        Link recetaLink = WebMvcLinkBuilder
+                                .linkTo(WebMvcLinkBuilder
+                                                .methodOn(RecetaRestController.class)
+                                                .findById(r.getRecetaId()))
+                                .withRel("receta");                
+
+
                         r.add(selfLink);
+                        r.add(recetaLink);      
                 });
 
                 return ResponseEntity.ok(lista);
@@ -104,7 +122,14 @@ public class RacionRestController {
                                                 .findById(creada.getId()))
                                 .withSelfRel();
 
+                Link recetaLink = WebMvcLinkBuilder
+                                .linkTo(WebMvcLinkBuilder
+                                                .methodOn(RecetaRestController.class)
+                                                .findById(creada.getRecetaId()))
+                                .withRel("receta");                
+
                 creada.add(selfLink);
+                creada.add(recetaLink);
 
                 return ResponseEntity.status(HttpStatus.CREATED).body(creada);
         }
@@ -125,8 +150,14 @@ public class RacionRestController {
                                                 .findById(actualizada.getId()))
                                 .withSelfRel();
 
-                actualizada.add(selfLink);
+                Link recetaLink = WebMvcLinkBuilder
+                                .linkTo(WebMvcLinkBuilder
+                                                .methodOn(RecetaRestController.class)
+                                                .findById(actualizada.getRecetaId()))
+                                .withRel("receta");                
 
+                actualizada.add(selfLink);
+                actualizada.add(recetaLink);
                 return ResponseEntity.ok(actualizada);
         }
 

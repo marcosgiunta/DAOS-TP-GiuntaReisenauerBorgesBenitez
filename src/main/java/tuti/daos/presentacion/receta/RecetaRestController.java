@@ -78,7 +78,7 @@ public class RecetaRestController {
 				.findById(receta.getId())
 		).withSelfRel());
 		
-		// LINK PARA CONSULTAR RACIONES DE LA RECETA (ESTO FALTA COMPLETAR CON LO DE RACIONES)
+		
 
 		recurso.add(
 		        WebMvcLinkBuilder.linkTo(

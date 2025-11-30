@@ -12,7 +12,7 @@ import java.util.Optional;
 import tuti.daos.entidades.EntregaAsistencia;
 import tuti.daos.entidades.Asistido;
 import tuti.daos.presentacion.asistencias.AsistenciasRequestDTO;
-import tuti.daos.presentacion.receta.RecetaResDTO;
+
 
 @Service
 public class AsistenciaServiceImpl implements AsistenciaService {
