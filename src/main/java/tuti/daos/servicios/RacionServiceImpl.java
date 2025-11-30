@@ -124,7 +124,7 @@ public class RacionServiceImpl implements RacionService {
         p.setFechaPreparacion(dto.getFechaPreparacion());
         p.setFechaVencimiento(dto.getFechaVencimiento());
         p.setTotalRacionesPreparadas(dto.getStockPreparado());
-        p.setStockRacionesRestantes(dto.getStockPreparado());
+        // stockRacionesRestantes NO se modifica - es de solo lectura y se actualiza automáticamente con las entregas
 
         Preparacion guardada = racionRepositorio.save(p);
 

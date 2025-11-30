@@ -1,6 +1,6 @@
 package tuti.daos.presentacion.asistencias;
 
-import java.time.LocalDate;
+import java.util.Date;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
@@ -18,7 +18,7 @@ public class AsistenciasRequestDTO {
 
     @NotNull(message = "La fecha de entrega es obligatoria")
     @PastOrPresent(message = "La fecha de entrega no puede ser futura")
-    private LocalDate fechaEntrega;
+    private Date fechaEntrega;
 
     public Integer getAsistido() {
         return asistido;
@@ -36,11 +36,11 @@ public class AsistenciasRequestDTO {
         this.idRacionEntregada = idRacionEntregada;
     }
 
-    public LocalDate getFechaEntrega() {
+    public Date getFechaEntrega() {
         return fechaEntrega;
     }
 
-    public void setFechaEntrega(LocalDate fechaEntrega) {
+    public void setFechaEntrega(Date fechaEntrega) {
         this.fechaEntrega = fechaEntrega;
     }
 }
