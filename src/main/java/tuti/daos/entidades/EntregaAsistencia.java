@@ -1,5 +1,5 @@
 package tuti.daos.entidades;
-import java.util.Date;
+import java.time.LocalDate;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -25,7 +25,7 @@ public class EntregaAsistencia {
 
     private Integer idRacionEntregada;
     
-    private Date fechaEntrega;
+    private LocalDate fechaEntrega;
 
     // @ManyToOne
     // @JoinColumn(name = "preparacion_id")
@@ -77,11 +77,11 @@ public class EntregaAsistencia {
         this.idRacionEntregada = idRacionEntregada;
     }
 
-    public Date getFechaEntrega() {
+    public LocalDate getFechaEntrega() {
         return fechaEntrega;
     }
 
-    public void setFechaEntrega(Date fechaEntrega) {
+    public void setFechaEntrega(LocalDate fechaEntrega) {
         this.fechaEntrega = fechaEntrega;
     }
  

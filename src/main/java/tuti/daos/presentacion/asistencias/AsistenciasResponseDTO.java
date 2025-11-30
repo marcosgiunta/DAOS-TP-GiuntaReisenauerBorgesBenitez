@@ -1,6 +1,6 @@
 package tuti.daos.presentacion.asistencias;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 import org.springframework.hateoas.RepresentationModel;
 
@@ -11,7 +11,7 @@ public class AsistenciasResponseDTO extends RepresentationModel<AsistenciasRespo
     private Integer id;
     private Integer asistido;
     private Integer idRacionEntregada;
-    private Date fechaEntrega;
+    private LocalDate fechaEntrega;
 
     public AsistenciasResponseDTO() {}
 
@@ -34,7 +34,7 @@ public class AsistenciasResponseDTO extends RepresentationModel<AsistenciasRespo
         return idRacionEntregada;
     }
 
-    public Date getFechaEntrega() {
+    public LocalDate getFechaEntrega() {
         return fechaEntrega;
     }
 }

@@ -2,6 +2,8 @@ package tuti.daos.servicios;
 
 import java.util.List;
 
+import java.time.LocalDate;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tuti.daos.Excepciones.Excepcion;
@@ -10,6 +12,7 @@ import java.util.Optional;
 import tuti.daos.entidades.EntregaAsistencia;
 import tuti.daos.entidades.Asistido;
 import tuti.daos.presentacion.asistencias.AsistenciasRequestDTO;
+import tuti.daos.presentacion.receta.RecetaResDTO;
 
 @Service
 public class AsistenciaServiceImpl implements AsistenciaService {
@@ -37,29 +40,28 @@ public class AsistenciaServiceImpl implements AsistenciaService {
 
     @Override
     public EntregaAsistencia add(AsistenciasRequestDTO request) {
+
         // Buscar el asistido por ID
         Asistido asistido = asistidoService.getById(request.getAsistido())
                 .orElseThrow(() -> new Excepcion("Asistencias", "No existe un asistido con el ID proporcionado", 404));
 
+        if (request.getFechaEntrega() == null) {
+            throw new Excepcion("Asistencia", "La fecha de entrega no puede ser nula", 400);
+        }
+
+        if (request.getFechaEntrega().isAfter(LocalDate.now())) {
+            throw new Excepcion("Asistencia", "La fecha de entrega no puede ser futura", 400);
+        }
+
+        // Crear entidad
         EntregaAsistencia nuevo = new EntregaAsistencia();
         nuevo.setAsistido(asistido);
         nuevo.setIdRacionEntregada(request.getIdRacionEntregada());
         nuevo.setFechaEntrega(request.getFechaEntrega());
 
-        // VALIDACIÓN CON S04 
-        /*
-        PreparacionDTO prep = restTemplate.getForObject(
-            "http://S04/preparaciones/" + request.getIdRacionEntregada(),
-            PreparacionDTO.class
-        );
-
-        if (request.getFechaEntrega().after(prep.getFechaVencimiento())) {
-            throw new Excepcion("Asistencias", "La fecha de entrega no puede superar el vencimiento", 400);
-        }
-        */
-
         return repo.save(nuevo);
     }
+
 
     @Override
     public EntregaAsistencia update(Integer id, AsistenciasRequestDTO request) {
@@ -75,22 +77,18 @@ public class AsistenciaServiceImpl implements AsistenciaService {
         existente.setIdRacionEntregada(request.getIdRacionEntregada());
         existente.setFechaEntrega(request.getFechaEntrega());
 
-        // VALIDACIÓN CON S04 
-        /*
-        PreparacionDTO prep = restTemplate.getForObject(
-            "http://S04/preparaciones/" + request.getIdRacionEntregada(),
-            PreparacionDTO.class
-        );
-
-        if (request.getFechaEntrega().after(prep.getFechaVencimiento())) {
-            throw new Excepcion("Asistencias", "La fecha de entrega no puede superar el vencimiento", 400);
+        if (request.getFechaEntrega() == null) {
+            throw new Excepcion("Asistencia", "La fecha de entrega no puede ser nula", 400);
         }
-        */
+
+        if (request.getFechaEntrega().isAfter(LocalDate.now())) {
+            throw new Excepcion("Asistencia", "La fecha de entrega no puede ser futura", 400);
+        }
 
         return repo.save(existente);
     }
 
     public List<EntregaAsistencia> findByAsistidoId(Integer id) {
     return repo.findByAsistidoId(id);
-}
+    }
 }
